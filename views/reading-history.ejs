@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title><%= messages.readingHistory || '閱讀歷史' %></title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4"><%= messages.readingHistory || '閱讀歷史' %></h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><%= messages.title || '書名' %></th>
+                    <th><%= messages.readTime || '閱讀時間' %></th>
+                    <th><%= messages.actions || '操作' %></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (history.length === 0) { %>
+                    <tr>
+                        <td colspan="3" class="text-center"><%= messages.noHistory || '目前沒有閱讀歷史。' %></td>
+                    </tr>
+                <% } else { %>
+                    <% history.forEach(record => { %>
+                        <tr>
+                            <td><%= record.bookId.title %></td>
+                            <td><%= record.readAt.toLocaleString() %></td>
+                            <td>
+                                <form action="/reading/unmark/<%= record._id %>" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-danger"><%= messages.unmarkAsRead || '取消標示為已讀' %></button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+        <a href="/books" class="btn btn-primary mt-3"><%= messages.backToBooks || '返回書籍管理' %></a>
+    </div>
+</body>
+</html>

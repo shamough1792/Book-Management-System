@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= messages.editBook || '修改書籍' %></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">     
+</head>
+<body>
+    <div class="container">
+        <h2><%= messages.editBook || '修改書籍' %></h2>
+        <form action="/books/edit/<%= book._id %>" method="POST" enctype="multipart/form-data">
+            <div class="input-field">
+                <label for="title"><%= messages.title || '書名' %></label>
+                <input type="text" name="title" id="title" value="<%= book.title %>" required>
+            </div>
+            <div class="input-field">
+                <label for="author"><%= messages.author || '作者' %></label>
+                <input type="text" name="author" id="author" value="<%= book.author %>" required>
+            </div>
+            <div class="input-field">
+                <label for="description"><%= messages.description || '描述' %></label>
+                <textarea name="description" id="description" required><%= book.description %></textarea>
+            </div>
+            <div class="input-field">
+                <label for="cover"><%= messages.cover || '封面 URL' %></label>
+                <input type="url" name="cover" id="cover" placeholder="留空以保持原封面" value="<%= book.cover %>">
+            </div>
+            <label for="coverFile"><%= messages.upload || '或上傳封面圖片:' %></label>
+            <div class="input-field">
+                <input type="file" name="coverFile" id="coverFile" accept="image/*">
+            </div>
+            <br>
+            <button class="btn waves-effect waves-light" type="submit"><%= messages.saveChanges || '儲存修改' %></button>
+            <a class="btn waves-effect waves-light" href="/books"><%= messages.cancel || '取消' %></a>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

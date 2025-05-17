@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title><%= messages.books || '書籍管理' %></title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200px;
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .book-card {
+            flex: 1;
+            margin: 10px;
+            height: 100%;
+        }
+        .card-img-top {
+            height: 250px;
+            width: 100%;
+            object-fit: contain;
+        }
+        .logout-container {
+            margin-top: auto; /* Pushes the logout button to the bottom */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 class="text-center"><%= messages.managementMenu || '管理選單' %></h2>
+        <a href="/books/add" class="btn btn-primary btn-block mb-3"><%= messages.addBook || '添加書籍' %></a>
+        <a href="/books/favorites" class="btn btn-secondary btn-block mb-3"><%= messages.favorites || '收藏書籍' %></a>
+        <a href="/reading-history" class="btn btn-info"><%= messages.readingHistory || '閱讀歷史' %></a>
+        <div class="logout-container">
+            <form action="/logout" method="POST">
+                <button type="submit" class="btn btn-danger btn-block"><%= messages.logout || '登出' %></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1 class="mt-4"><%= messages.books || '書籍管理' %></h1>
+
+        <!-- 語言切換按鈕 -->
+        <div class="language-buttons mb-3">
+            <form action="/set-language/en" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-link">English</button>
+            </form>
+            <form action="/set-language/zh" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-link">中文</button>
+            </form>
+        </div>
+
+        <!-- 搜尋表單 -->
+        <form action="/books/search" method="GET" class="mb-4 d-flex">
+            <input type="text" name="q" class="form-control" placeholder="<%= messages.searchPlaceholder || '搜尋書名或作者' %>" required style="flex: 2; min-width: 0;">
+            <button type="submit" class="btn btn-primary ml-2" style="flex: 1; max-width: 100px;"><%= messages.search || '搜尋' %></button>
+            <button type="button" class="btn btn-secondary ml-2" onclick="resetSearch()" style="flex: 1; max-width: 100px;"><%= messages.reset || '重設' %></button>
+        </form>
+
+        <div class="row">
+            <% books.forEach(book => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card book-card">
+                        <img src="<%= book.cover %>" class="card-img-top" alt="<%= book.title %>">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title"><%= book.title %></h5>
+                            <p class="card-text"><%= messages.author || '作者' %>: <%= book.author %></p>
+                            <p class="card-text flex-grow-1"><%= book.description %></p>
+                            <div class="mt-auto d-flex justify-content-between">
+                                <form action="/books/favorite/<%= book._id %>" method="POST" class="d-inline">
+                                    <button type="submit" class="btn <%= book.isFavorite ? 'btn-danger' : 'btn-secondary' %>">
+                                        <%= book.isFavorite ? messages.unfavorite || '取消收藏' : messages.favorite || '收藏' %>
+                                    </button>
+                                </form>
+                                <form action="/books/delete/<%= book._id %>" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-danger"><%= messages.delete || '刪除' %></button>
+                                </form>
+                                <form action="/reading/<%= book._id %>" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-success"><%= messages.markAsRead || '標記為已讀' %></button>
+                                </form>
+                                <a href="/books/edit/<%= book._id %>" class="btn btn-warning"><%= messages.edit || '修改' %></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <script>
+        function resetSearch() {
+            document.querySelector('input[name="q"]').value = ''; 
+            window.location.href = '/books'; 
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
